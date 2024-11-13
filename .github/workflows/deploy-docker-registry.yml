@@ -53,8 +53,13 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "${{ env.REGISTRY_DIR }}/deploy_registry.sh '${{ secrets.REGISTRY_USERNAME }}' '${{ secrets.REGISTRY_PASSWORD }}' '${{ env.REGISTRY_DIR }}'"
 
       - name: Configure Nginx
+        env:
+            VPS_IP: ${{ secrets.VPS_HOST }}
+            REGISTRY_DOMAIN: ${{ secrets.REGISTRY_DOMAIN }}
+            REGISTRY_DIR: ${{ env.REGISTRY_DIR }}
+            EMAIL: ${{ secrets.EMAIL }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "${{ env.REGISTRY_DIR }}/configure_nginx.sh '${{ env.REGISTRY_DOMAIN }}' '${{ env.VPS_IP }}' '${{ env.REGISTRY_DIR }}' '${{ secrets.EMAIL}}'"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "${{ env.REGISTRY_DIR }}/configure_nginx.sh"
 
       - name: Restart Nginx
         run: |
