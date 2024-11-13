@@ -6,7 +6,7 @@ REGISTRY_USERNAME="$1"
 REGISTRY_PASSWORD="$2"
 
 # Define registry directory
-REGISTRY_DIR="/home/${VPS_USER}/docker-registry"
+REGISTRY_DIR=~/docker-registry
 
 # Define container name
 CONTAINER_NAME="docker-registry"

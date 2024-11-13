@@ -6,7 +6,7 @@ REGISTRY_DOMAIN="$1"
 VPS_IP="$2"
 
 # Define registry directory
-REGISTRY_DIR="/home/${VPS_USER}/docker-registry"
+REGISTRY_DIR=~/docker-registry
 
 # Function to configure Nginx with domain
 configure_nginx_with_domain() {
