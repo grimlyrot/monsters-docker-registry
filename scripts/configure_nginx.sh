@@ -9,6 +9,9 @@ EMAIL="$4"
 
 REGISTRY_DIR="${REGISTRY_DIR/#\~/$HOME}"
 
+export REGISTRY_DOMAIN
+export VPS_IP
+
 echo "VPS_IP: $VPS_IP"
 
 # Function to configure Nginx with domain
