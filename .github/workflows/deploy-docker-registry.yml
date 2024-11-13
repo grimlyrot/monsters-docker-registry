@@ -25,35 +25,35 @@ jobs:
 
       - name: Create Docker Registry Directory and Scripts Subdirectory on VPS
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p ~docker-registry/scripts"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p ~/docker-registry/scripts"
 
       - name: Verify Docker Registry and Scripts Directory Exists
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -ld ~docker-registry/scripts/"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -ld ~/docker-registry/scripts/"
 
       - name: Upload Configuration Files and Scripts
         run: |
-          scp -o StrictHostKeyChecking=no docker-compose.yml nginx-with-domain.conf.template nginx-without-domain.conf.template scripts/*.sh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~docker-registry/scripts/
+          scp -o StrictHostKeyChecking=no docker-compose.yml nginx-with-domain.conf.template nginx-without-domain.conf.template scripts/*.sh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/docker-registry/scripts/
 
       - name: Verify Uploaded Scripts and Config Files
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -la ~docker-registry/scripts/"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -la ~/docker-registry/scripts/"
 
       - name: Make Scripts Executable
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "chmod +x ~docker-registry/scripts/*.sh"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "chmod +x ~/docker-registry/scripts/*.sh"
 
       - name: Install Dependencies
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "~docker-registry/scripts/install_dependencies.sh"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "~/docker-registry/scripts/install_dependencies.sh"
 
       - name: Deploy Docker Registry
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "~docker-registry/scripts/deploy_registry.sh '${{ secrets.REGISTRY_USERNAME }}' '${{ secrets.REGISTRY_PASSWORD }}'"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "~/docker-registry/scripts/deploy_registry.sh '${{ secrets.REGISTRY_USERNAME }}' '${{ secrets.REGISTRY_PASSWORD }}'"
 
       - name: Configure Nginx
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "~docker-registry/scripts/configure_nginx.sh '${{ secrets.REGISTRY_DOMAIN }}' '${{ secrets.VPS_HOST }}'"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "~/docker-registry/scripts/configure_nginx.sh '${{ secrets.REGISTRY_DOMAIN }}' '${{ secrets.VPS_HOST }}'"
 
       - name: Restart Nginx
         run: |
