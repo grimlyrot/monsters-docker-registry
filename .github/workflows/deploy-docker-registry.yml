@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main  # Trigger on pushes to the main branch
+  workflow_dispatch: # Allow manual triggering of the workflow
 
 jobs:
   deploy:
@@ -37,29 +38,3 @@ jobs:
       - name: Setup SSL
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "~/docker-registry/scripts/setup_ssl.sh '${{ secrets.REGISTRY_DOMAIN }}' '${{ secrets.EMAIL }}'"
-
-      - name: Notify Deployment Success
-        if: success()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.example.com
-          server_port: 587
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Docker Registry Deployment Successful"
-          body: "The Docker registry has been successfully deployed on ${{ secrets.VPS_HOST }}."
-          to: your-email@example.com
-          from: your-email@example.com
-
-      - name: Notify Deployment Failure
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.example.com
-          server_port: 587
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Docker Registry Deployment Failed"
-          body: "The Docker registry deployment failed on ${{ secrets.VPS_HOST }}. Please check the workflow logs for details."
-          to: your-email@example.com
-          from: your-email@example.com
