@@ -6,6 +6,8 @@ REGISTRY_USERNAME="$1"
 REGISTRY_PASSWORD="$2"
 REGISTRY_DIR="$3"
 
+REGISTRY_DIR="${REGISTRY_DIR/#\~/$HOME}"
+
 # Define container name
 CONTAINER_NAME="docker-registry"
 
