@@ -9,11 +9,34 @@ REGISTRY_PASSWORD="$2"
 # Define registry directory
 REGISTRY_DIR=~/docker-registry
 
-# Check if Docker registry is already deployed
-if [ -d "$REGISTRY_DIR" ] && [ -f "$REGISTRY_DIR/docker-compose.yml" ]; then
-    echo "Docker registry is already deployed. Skipping deployment."
+# Define container name as per docker-compose.yml
+CONTAINER_NAME="docker-registry"
+
+# Function to check if the container is running
+is_container_running() {
+    docker ps --filter "name=^/${CONTAINER_NAME}$" --filter "status=running" | grep "${CONTAINER_NAME}" > /dev/null 2>&1
+}
+
+# Function to check if the container exists (running or not)
+does_container_exist() {
+    docker ps -a --filter "name=^/${CONTAINER_NAME}$" | grep "${CONTAINER_NAME}" > /dev/null 2>&1
+}
+
+# Check if Docker registry container is running
+if is_container_running; then
+    echo "Docker registry container '${CONTAINER_NAME}' is already running. Skipping deployment."
     exit 0
 fi
+
+# If container exists but is not running, start it
+if does_container_exist; then
+    echo "Docker registry container '${CONTAINER_NAME}' exists but is not running. Starting the container."
+    docker start "${CONTAINER_NAME}"
+    exit 0
+fi
+
+# Proceed with deployment since container does not exist
+echo "Docker registry container '${CONTAINER_NAME}' does not exist. Proceeding with deployment."
 
 # Create Docker registry directory
 mkdir -p "$REGISTRY_DIR"
@@ -21,9 +44,6 @@ echo "Docker registry directory created at $REGISTRY_DIR."
 
 # Navigate to the Docker registry directory
 cd "$REGISTRY_DIR"
-
-# Upload docker-compose.yml from repository
-# (Assumes docker-compose.yml has been uploaded via SCP in the workflow)
 
 # Set up authentication
 mkdir -p auth
@@ -34,6 +54,14 @@ else
     echo "Authentication file already exists. Skipping htpasswd creation."
 fi
 
-# Start Docker registry
+# Start Docker registry using docker-compose
 docker-compose up -d
-echo "Docker registry started."
+echo "Docker registry deployed and started successfully."
+
+# Optionally, verify that the container is running
+if is_container_running; then
+    echo "Docker registry container '${CONTAINER_NAME}' is now running."
+else
+    echo "Failed to start Docker registry container '${CONTAINER_NAME}'. Please check the logs."
+    exit 1
+fi
