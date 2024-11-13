@@ -11,7 +11,7 @@ REGISTRY_DIR="${REGISTRY_DIR/#\~/$HOME}"
 
 # Function to configure Nginx with domain
 configure_nginx_with_domain() {
-    echo "Configuring Nginx with domain: $REGISTRY_DOMAIN"
+    echo "Configuring Nginx with domain"
 
     # Substitute placeholders in the template
     envsubst '\$REGISTRY_DOMAIN' < "$REGISTRY_DIR/nginx-with-domain.conf.template" > "$REGISTRY_DIR/nginx.conf"
@@ -33,7 +33,7 @@ configure_nginx_with_domain() {
 
 # Function to configure Nginx without domain
 configure_nginx_without_domain() {
-    echo "Configuring Nginx without domain (using IP address): $VPS_IP"
+    echo "Configuring Nginx without domain (using IP address)"
 
     # Substitute placeholders in the template
     envsubst '\$VPS_IP' < "$REGISTRY_DIR/nginx-without-domain.conf.template" > "$REGISTRY_DIR/nginx.conf"

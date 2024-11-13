@@ -7,6 +7,8 @@ on:
   workflow_dispatch:  # Enable manual trigger
 
 env:
+  VPS_IP: ${{ secrets.VPS_HOST }}
+  REGISTRY_DOMAIN: ${{ secrets.REGISTRY_DOMAIN }}
   REGISTRY_DIR: '~/docker-registry'
 
 jobs:
@@ -52,7 +54,7 @@ jobs:
 
       - name: Configure Nginx
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "${{ env.REGISTRY_DIR }}/configure_nginx.sh '${{ secrets.REGISTRY_DOMAIN }}' '${{ secrets.VPS_HOST }}' '${{ env.REGISTRY_DIR }}' '${{ secrets.EMAIL}}'"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "${{ env.REGISTRY_DIR }}/configure_nginx.sh '${{ env.REGISTRY_DOMAIN }}' '${{ env.VPS_IP }}' '${{ env.REGISTRY_DIR }}' '${{ secrets.EMAIL}}'"
 
       - name: Restart Nginx
         run: |
