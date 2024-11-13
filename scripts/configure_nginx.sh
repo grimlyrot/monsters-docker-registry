@@ -14,7 +14,7 @@ configure_nginx_with_domain() {
     echo "Configuring Nginx with domain: $REGISTRY_DOMAIN"
 
     # Substitute placeholders in the template
-    envsubst "\$REGISTRY_DOMAIN" < "$REGISTRY_DIR/nginx-with-domain.conf.template" > "$REGISTRY_DIR/nginx.conf"
+    envsubst '\$REGISTRY_DOMAIN' < "$REGISTRY_DIR/nginx-with-domain.conf.template" > "$REGISTRY_DIR/nginx.conf"
 
     # Enable the site by creating a symbolic link
     ln -sf "$REGISTRY_DIR/nginx.conf" /etc/nginx/sites-available/docker-registry.conf
@@ -36,7 +36,7 @@ configure_nginx_without_domain() {
     echo "Configuring Nginx without domain (using IP address): $VPS_IP"
 
     # Substitute placeholders in the template
-    envsubst "\$VPS_IP" < "$REGISTRY_DIR/nginx-without-domain.conf.template" > "$REGISTRY_DIR/nginx.conf"
+    envsubst '\$VPS_IP' < "$REGISTRY_DIR/nginx-without-domain.conf.template" > "$REGISTRY_DIR/nginx.conf"
 
     # Enable the site by creating a symbolic link
     ln -sf "$REGISTRY_DIR/nginx.conf" /etc/nginx/sites-available/docker-registry.conf
