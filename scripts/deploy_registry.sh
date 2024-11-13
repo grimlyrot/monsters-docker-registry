@@ -1,15 +1,14 @@
 #!/bin/bash
-
-set -e  # Exit immediately if a command exits with a non-zero status
+set -e
 
 # Parameters
 REGISTRY_USERNAME="$1"
 REGISTRY_PASSWORD="$2"
 
 # Define registry directory
-REGISTRY_DIR=~/docker-registry
+REGISTRY_DIR="/home/${VPS_USER}/docker-registry"
 
-# Define container name as per docker-compose.yml
+# Define container name
 CONTAINER_NAME="docker-registry"
 
 # Function to check if the container is running
@@ -17,7 +16,7 @@ is_container_running() {
     docker ps --filter "name=^/${CONTAINER_NAME}$" --filter "status=running" | grep "${CONTAINER_NAME}" > /dev/null 2>&1
 }
 
-# Function to check if the container exists (running or not)
+# Function to check if the container exists
 does_container_exist() {
     docker ps -a --filter "name=^/${CONTAINER_NAME}$" | grep "${CONTAINER_NAME}" > /dev/null 2>&1
 }
@@ -38,11 +37,7 @@ fi
 # Proceed with deployment since container does not exist
 echo "Docker registry container '${CONTAINER_NAME}' does not exist. Proceeding with deployment."
 
-# Create Docker registry directory
-mkdir -p "$REGISTRY_DIR"
-echo "Docker registry directory created at $REGISTRY_DIR."
-
-# Navigate to the Docker registry directory
+# Navigate to the registry directory
 cd "$REGISTRY_DIR"
 
 # Set up authentication
@@ -58,7 +53,7 @@ fi
 docker-compose up -d
 echo "Docker registry deployed and started successfully."
 
-# Optionally, verify that the container is running
+# Verify that the container is running
 if is_container_running; then
     echo "Docker registry container '${CONTAINER_NAME}' is now running."
 else

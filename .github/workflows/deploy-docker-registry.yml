@@ -6,6 +6,10 @@ on:
       - main  # Trigger on pushes to the main branch
   workflow_dispatch:  # Enable manual trigger
 
+env:
+  VPS_IP: ${{ secrets.VPS_HOST }}  # Assuming VPS_HOST is your VPS IP
+  REGISTRY_DOMAIN: ${{ secrets.REGISTRY_DOMAIN }}  # Empty if no domain
+
 jobs:
   DeployRegistry:
     runs-on: ubuntu-latest
@@ -19,31 +23,38 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Create Docker Registry Directory on VPS
+      - name: Create Docker Registry Directory and Scripts Subdirectory on VPS
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /home/${{ secrets.VPS_USER }}/docker-registry"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /home/${{ secrets.VPS_USER }}/docker-registry/scripts"
 
-      - name: Verify Docker Registry Directory Exists
+      - name: Verify Docker Registry and Scripts Directory Exists
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -ld /home/${{ secrets.VPS_USER }}/docker-registry/"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -ld /home/${{ secrets.VPS_USER }}/docker-registry/scripts/"
 
       - name: Upload Configuration Files and Scripts
         run: |
-          scp -o StrictHostKeyChecking=no docker-compose.yml nginx.conf scripts/*.sh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/docker-registry/
+          scp -o StrictHostKeyChecking=no docker-compose.yml nginx-with-domain.conf.template nginx-without-domain.conf.template scripts/*.sh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/docker-registry/scripts/
+
+      - name: Verify Uploaded Scripts and Config Files
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -la /home/${{ secrets.VPS_USER }}/docker-registry/scripts/"
 
       - name: Make Scripts Executable
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "chmod +x /home/${{ secrets.VPS_USER }}/docker-registry/*.sh"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "chmod +x /home/${{ secrets.VPS_USER }}/docker-registry/scripts/*.sh"
 
       - name: Install Dependencies
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "/home/${{ secrets.VPS_USER }}/docker-registry/install_dependencies.sh"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "/home/${{ secrets.VPS_USER }}/docker-registry/scripts/install_dependencies.sh"
 
       - name: Deploy Docker Registry
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "/home/${{ secrets.VPS_USER }}/docker-registry/deploy_registry.sh '${{ secrets.REGISTRY_USERNAME }}' '${{ secrets.REGISTRY_PASSWORD }}'"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "/home/${{ secrets.VPS_USER }}/docker-registry/scripts/deploy_registry.sh '${{ secrets.REGISTRY_USERNAME }}' '${{ secrets.REGISTRY_PASSWORD }}'"
 
-      - name: Setup SSL
+      - name: Configure Nginx
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "/home/${{ secrets.VPS_USER }}/docker-registry/setup_ssl.sh '${{ secrets.REGISTRY_DOMAIN }}' '${{ secrets.EMAIL }}'"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "/home/${{ secrets.VPS_USER }}/docker-registry/scripts/configure_nginx.sh '${{ secrets.REGISTRY_DOMAIN }}' '${{ secrets.VPS_HOST }}'"
 
+      - name: Restart Nginx
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "systemctl restart nginx"
