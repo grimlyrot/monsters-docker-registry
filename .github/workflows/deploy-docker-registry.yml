@@ -40,7 +40,7 @@ jobs:
 
       - name: Make Scripts Executable
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "chmod +x ${{ env.REGISTRY_DIR }}*.sh"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "chmod +x ${{ env.REGISTRY_DIR }}/*.sh"
 
       - name: Install Dependencies
         run: |
