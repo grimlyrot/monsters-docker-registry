@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Parameters
+REGISTRY_DOMAIN="$1"
+VPS_IP="$2"
+REGISTRY_DIR="$3"
+EMAIL="$4"
+
 REGISTRY_DIR="${REGISTRY_DIR/#\~/$HOME}"
 
 echo "VPS_IP: $VPS_IP"
