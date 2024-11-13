@@ -4,9 +4,7 @@ set -e
 # Parameters
 REGISTRY_USERNAME="$1"
 REGISTRY_PASSWORD="$2"
-
-# Define registry directory
-REGISTRY_DIR=~/docker-registry
+REGISTRY_DIR="$3"
 
 # Define container name
 CONTAINER_NAME="docker-registry"
