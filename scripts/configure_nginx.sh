@@ -47,10 +47,8 @@ configure_nginx_without_domain() {
     # Enable the site
     ln -sf /etc/nginx/sites-available/docker-registry.conf /etc/nginx/sites-enabled/
 
-
     # Restart Nginx
-    pkill -f nginx & wait $!
-    systemctl start nginx
+    systemctl restart nginx
 
     echo "Nginx configured without domain successfully."
 }

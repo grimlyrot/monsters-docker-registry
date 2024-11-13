@@ -1,7 +1,7 @@
 # nginx-without-domain.conf.template
 
 server {
-    listen 5000;
+    listen 80;
     server_name $VPS_IP;
 
     location / {
