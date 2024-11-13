@@ -12,8 +12,6 @@ REGISTRY_DIR="${REGISTRY_DIR/#\~/$HOME}"
 export REGISTRY_DOMAIN
 export VPS_IP
 
-echo "VPS_IP: $VPS_IP"
-
 # Function to configure Nginx with domain
 configure_nginx_with_domain() {
     echo "Configuring Nginx with domain"
@@ -49,8 +47,10 @@ configure_nginx_without_domain() {
     # Enable the site
     ln -sf /etc/nginx/sites-available/docker-registry.conf /etc/nginx/sites-enabled/
 
+
     # Restart Nginx
-    systemctl restart nginx
+    pkill -f nginx & wait $!
+    systemctl start nginx
 
     echo "Nginx configured without domain successfully."
 }
