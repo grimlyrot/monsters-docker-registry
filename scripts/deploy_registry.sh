@@ -40,7 +40,10 @@ echo "Docker registry container '${CONTAINER_NAME}' does not exist. Proceeding w
 # Navigate to the registry directory
 cd "$REGISTRY_DIR"
 
-# Set up authentication
+# print current dir
+echo "Current directory: $(pwd)"
+
+#Set up authentication
 mkdir -p auth
 if [ ! -f auth/htpasswd ]; then
     htpasswd -bc auth/htpasswd "$REGISTRY_USERNAME" "$REGISTRY_PASSWORD"
