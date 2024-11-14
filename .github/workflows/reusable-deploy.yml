@@ -7,10 +7,6 @@ on:
         description: 'Domain for the Docker registry'
         required: false
         type: string
-      VPS_IP:
-        description: 'IP address of the VPS'
-        required: true
-        type: string
       REGISTRY_DIR:
         description: 'Directory path for Docker registry on VPS'
         required: true
