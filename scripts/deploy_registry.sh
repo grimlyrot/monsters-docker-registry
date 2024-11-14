@@ -29,6 +29,9 @@ if is_container_running; then
     exit 0
 fi
 
+# Navigate to the registry directory
+cd "$REGISTRY_DIR"
+
 #Set up authentication
 mkdir -p auth
 if [ ! -f auth/htpasswd ]; then
@@ -47,12 +50,6 @@ fi
 
 # Proceed with deployment since container does not exist
 echo "Docker registry container '${CONTAINER_NAME}' does not exist. Proceeding with deployment."
-
-# Navigate to the registry directory
-cd "$REGISTRY_DIR"
-
-# print current dir
-echo "Current directory: $(pwd)"
 
 # Start Docker registry using docker-compose
 docker-compose up -d
