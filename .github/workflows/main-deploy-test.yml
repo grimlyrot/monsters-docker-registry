@@ -11,23 +11,23 @@ jobs:
     name: Deploy Docker Registry
     uses: ./.github/workflows/reusable-deploy.yml
     with:
-      REGISTRY_DOMAIN: ${{ secrets.REGISTRY_DOMAIN }}
+      REGISTRY_DOMAIN: "${{ secrets.REGISTRY_DOMAIN }}"
       REGISTRY_DIR: '~/docker-registry'
-      EMAIL: ${{ secrets.EMAIL }}
-      USE_SSL: ${{ secrets.USE_SSL }}
+      EMAIL: "${{ secrets.EMAIL }}"
+      USE_SSL: "${{ secrets.USE_SSL }}"
     secrets:
-      VPS_USER: ${{ secrets.VPS_USER }}
-      VPS_HOST: ${{ secrets.VPS_HOST }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      VPS_USER: "${{ secrets.VPS_USER }}"
+      VPS_HOST: "${{ secrets.VPS_HOST }}"
+      SSH_PRIVATE_KEY: "${{ secrets.SSH_PRIVATE_KEY }}"
+      REGISTRY_USERNAME: "${{ secrets.REGISTRY_USERNAME }}"
+      REGISTRY_PASSWORD: "${{ secrets.REGISTRY_PASSWORD }}"
 
   test:
     name: Test Docker Registry
     needs: deploy
     uses: ./.github/workflows/reusable-test.yml
     with:
-      REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
+      REGISTRY_URL: "${{ secrets.REGISTRY_URL }}"
     secrets:
-      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      REGISTRY_USERNAME: "${{ secrets.REGISTRY_USERNAME }}"
+      REGISTRY_PASSWORD: "${{ secrets.REGISTRY_PASSWORD }}"
