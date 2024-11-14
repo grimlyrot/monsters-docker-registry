@@ -29,6 +29,15 @@ if is_container_running; then
     exit 0
 fi
 
+#Set up authentication
+mkdir -p auth
+if [ ! -f auth/htpasswd ]; then
+    htpasswd -bc auth/htpasswd "$REGISTRY_USERNAME" "$REGISTRY_PASSWORD"
+    echo "Authentication setup completed with user: $REGISTRY_USERNAME."
+else
+    echo "Authentication file already exists. Skipping htpasswd creation."
+fi
+
 # If container exists but is not running, start it
 if does_container_exist; then
     echo "Docker registry container '${CONTAINER_NAME}' exists but is not running. Starting the container."
@@ -44,15 +53,6 @@ cd "$REGISTRY_DIR"
 
 # print current dir
 echo "Current directory: $(pwd)"
-
-#Set up authentication
-mkdir -p auth
-if [ ! -f auth/htpasswd ]; then
-    htpasswd -bc auth/htpasswd "$REGISTRY_USERNAME" "$REGISTRY_PASSWORD"
-    echo "Authentication setup completed with user: $REGISTRY_USERNAME."
-else
-    echo "Authentication file already exists. Skipping htpasswd creation."
-fi
 
 # Start Docker registry using docker-compose
 docker-compose up -d
