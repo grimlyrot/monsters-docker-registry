@@ -31,6 +31,7 @@ jobs:
 
       - name: Tag Hello-World Image
         run: |
+          echo ${{ env.REGISTRY_URL }}
           docker pull hello-world:latest
           docker tag hello-world:latest ${{ env.REGISTRY_URL }}/test/hello-world:latest
 
