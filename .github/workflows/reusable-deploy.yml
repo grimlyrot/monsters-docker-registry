@@ -24,6 +24,12 @@ on:
         required: true
         type: boolean
     secrets:
+      VPS_USER:
+          required: true
+      VPS_HOST:
+          required: true
+      SSH_PRIVATE_KEY:
+          required: true
       REGISTRY_USERNAME:
         required: true
       REGISTRY_PASSWORD:
