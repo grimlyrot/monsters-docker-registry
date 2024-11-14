@@ -2,17 +2,15 @@ name: Test Docker Registry
 
 on:
   workflow_call:
-    inputs:
+    secrets:
       REGISTRY_URL:
         description: 'URL of the Docker registry'
         required: true
-        type: string
-    secrets:
       REGISTRY_USERNAME:
         required: true
       REGISTRY_PASSWORD:
         required: true
-        
+
 jobs:
   test-registry:
     runs-on: ubuntu-latest

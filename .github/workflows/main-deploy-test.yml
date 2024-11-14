@@ -11,11 +11,11 @@ jobs:
     name: Deploy Docker Registry
     uses: ./.github/workflows/reusable-deploy.yml
     with:
+      REGISTRY_DIR: '~/docker-registry'
+    secrets:
       EMAIL: ${{ secrets.EMAIL }}
       REGISTRY_DOMAIN: ${{ secrets.REGISTRY_DOMAIN }}
-      REGISTRY_DIR: '~/docker-registry'
       USE_SSL: ${{ secrets.USE_SSL }}
-    secrets:
       VPS_USER: ${{ secrets.VPS_USER }}
       VPS_HOST: ${{ secrets.VPS_HOST }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -26,8 +26,7 @@ jobs:
     name: Test Docker Registry
     needs: deploy
     uses: ./.github/workflows/reusable-test.yml
-    with:
-      REGISTRY_URL: ${{ secrets.REGISTRY_DOMAIN }}
     secrets:
+      REGISTRY_URL: ${{ secrets.REGISTRY_DOMAIN }}
       REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
       REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}

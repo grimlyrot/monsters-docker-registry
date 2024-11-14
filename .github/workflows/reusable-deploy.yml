@@ -3,23 +3,21 @@ name: Deploy Docker Registry
 on:
   workflow_call:
     inputs:
-      REGISTRY_DOMAIN:
-        description: 'Domain for the Docker registry'
-        required: false
-        type: string
       REGISTRY_DIR:
         description: 'Directory path for Docker registry on VPS'
         required: true
         type: string
+
+    secrets:
+      REGISTRY_DOMAIN:
+        description: 'Domain for the Docker registry'
+        required: false
       EMAIL:
         description: 'Email for Certbot notifications'
         required: true
-        type: string
       USE_SSL:
         description: 'Whether to use SSL (true/false)'
         required: true
-        type: boolean
-    secrets:
       VPS_USER:
         required: true
       VPS_HOST:
