@@ -21,11 +21,11 @@ on:
         type: boolean
     secrets:
       VPS_USER:
-          required: true
+        required: true
       VPS_HOST:
-          required: true
+        required: true
       SSH_PRIVATE_KEY:
-          required: true
+        required: true
       REGISTRY_USERNAME:
         required: true
       REGISTRY_PASSWORD:
