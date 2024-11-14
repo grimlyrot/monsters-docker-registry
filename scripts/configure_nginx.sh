@@ -14,6 +14,9 @@ REGISTRY_DIR="${REGISTRY_DIR/#\~/$HOME}"
 export REGISTRY_DOMAIN
 export VPS_IP
 
+#delete $REGISTRY_DOMAIN
+REGISTRY_DOMAIN=""
+
 # Function to configure Nginx with domain (HTTP only)
 configure_nginx_with_domain_http() {
     echo "Configuring Nginx with domain (HTTP only)"
