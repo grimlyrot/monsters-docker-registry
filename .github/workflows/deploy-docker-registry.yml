@@ -1,13 +1,33 @@
 name: Deploy Docker Registry
 
 on:
-  push:
-    branches:
-      - main  # Trigger on pushes to the main branch
-  workflow_dispatch:  # Enable manual trigger
-
-env:
-  REGISTRY_DIR: '~/docker-registry'
+  workflow_call:
+    inputs:
+      REGISTRY_DOMAIN:
+        description: 'Domain for the Docker registry'
+        required: false
+        type: string
+      VPS_IP:
+        description: 'IP address of the VPS'
+        required: true
+        type: string
+      REGISTRY_DIR:
+        description: 'Directory path for Docker registry on VPS'
+        required: true
+        type: string
+      EMAIL:
+        description: 'Email for Certbot notifications'
+        required: true
+        type: string
+      USE_SSL:
+        description: 'Whether to use SSL (true/false)'
+        required: true
+        type: boolean
+    secrets:
+      REGISTRY_USERNAME:
+        required: true
+      REGISTRY_PASSWORD:
+        required: true
 
 jobs:
   DeployRegistry:
@@ -52,7 +72,7 @@ jobs:
 
       - name: Configure Nginx
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "${{ env.REGISTRY_DIR }}/configure_nginx.sh '${{ secrets.REGISTRY_DOMAIN }}' '${{ secrets.VPS_HOST }}' '${{ env.REGISTRY_DIR }}' '${{ secrets.EMAIL}}'"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "${{ env.REGISTRY_DIR }}/configure_nginx.sh '${{ env.REGISTRY_DOMAIN }}' '${{ secrets.VPS_HOST }}' '${{ env.REGISTRY_DIR }}' '${{ env.EMAIL}}'"
 
       - name: Restart Nginx
         run: |
