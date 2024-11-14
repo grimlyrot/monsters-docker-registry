@@ -11,6 +11,8 @@ REGISTRY_DIR="${REGISTRY_DIR/#\~/$HOME}"
 # Define container name
 CONTAINER_NAME="docker-registry"
 
+echo "REGISTRY_DIR: $REGISTRY_DIR"
+
 # Function to check if the container is running
 is_container_running() {
     docker ps --filter "name=^/${CONTAINER_NAME}$" --filter "status=running" | grep "${CONTAINER_NAME}" > /dev/null 2>&1
