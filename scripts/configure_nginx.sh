@@ -7,16 +7,18 @@ VPS_IP="$2"
 REGISTRY_DIR="$3"
 EMAIL="$4"
 
+# Expand ~ to $HOME if present
 REGISTRY_DIR="${REGISTRY_DIR/#\~/$HOME}"
 
+# Export variables for envsubst
 export REGISTRY_DOMAIN
 export VPS_IP
 
-# Function to configure Nginx with domain
-configure_nginx_with_domain() {
-    echo "Configuring Nginx with domain"
+# Function to configure Nginx with domain (HTTP only)
+configure_nginx_with_domain_http() {
+    echo "Configuring Nginx with domain (HTTP only)"
 
-    # Substitute placeholders in the template
+    # Substitute placeholders in the HTTP template
     envsubst '\$REGISTRY_DOMAIN' < "$REGISTRY_DIR/nginx-with-domain.conf.template" > "$REGISTRY_DIR/nginx.conf"
 
     # Enable the site by creating a symbolic link
@@ -25,13 +27,27 @@ configure_nginx_with_domain() {
     # Enable the site
     ln -sf /etc/nginx/sites-available/docker-registry.conf /etc/nginx/sites-enabled/
 
-    # Obtain SSL certificate using Certbot
+    # Test Nginx configuration
+    nginx -t
+
+    # Reload Nginx to apply changes
+    systemctl reload nginx
+
+    echo "Nginx configured with domain (HTTP only) successfully."
+}
+
+# Function to obtain SSL certificate and configure Nginx for HTTPS
+obtain_ssl_and_configure_nginx() {
+    echo "Obtaining SSL certificate using Certbot"
+
+    # Install Certbot if not already installed
     apt-get update
     apt-get install -y certbot python3-certbot-nginx
 
+    # Obtain SSL certificate and configure Nginx
     certbot --nginx -d "$REGISTRY_DOMAIN" --non-interactive --agree-tos -m "$EMAIL" --redirect
 
-    echo "Nginx configured with domain and SSL successfully."
+    echo "SSL certificate obtained and Nginx configured with HTTPS successfully."
 }
 
 # Function to configure Nginx without domain
@@ -47,15 +63,19 @@ configure_nginx_without_domain() {
     # Enable the site
     ln -sf /etc/nginx/sites-available/docker-registry.conf /etc/nginx/sites-enabled/
 
-    # Restart Nginx
+    # Test Nginx configuration
+    nginx -t
+
+    # Restart Nginx to apply changes
     systemctl restart nginx
 
     echo "Nginx configured without domain successfully."
 }
 
-# Check if REGISTRY_DOMAIN is provided
+# Main Execution
 if [ -z "$REGISTRY_DOMAIN" ]; then
     configure_nginx_without_domain
 else
-    configure_nginx_with_domain
+    configure_nginx_with_domain_http
+    obtain_ssl_and_configure_nginx
 fi
